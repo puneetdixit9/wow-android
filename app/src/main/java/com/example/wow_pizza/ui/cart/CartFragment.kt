@@ -1,5 +1,6 @@
 package com.example.wow_pizza.ui.cart
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -40,6 +41,9 @@ class CartFragment : Fragment() {
 
         val recyclerView: RecyclerView = binding.recyclerView
 
+        val sharedPreferences = requireActivity().getSharedPreferences("UserToken", Context.MODE_PRIVATE)
+        val token = sharedPreferences.getString("token", "")
+
         // Retrofit setup
         val retrofit = Retrofit.Builder()
             .baseUrl("http://44.211.227.41/wow-api/")
@@ -52,7 +56,6 @@ class CartFragment : Fragment() {
         val apiService = retrofit.create(ApiService::class.java)
 
         lifecycleScope.launch {
-            val token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY5MzcxODc0MywianRpIjoiZDZhZDhlNzEtMTA2ZS00YjY1LWEyMTUtYTA5YWYwZTA4NTY3IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJ1c2VyX2lkIjoiNjRlMWY2ZDRkNzE0MGRmZjVkN2VmN2M5Iiwicm9sZSI6ImFkbWluIn0sIm5iZiI6MTY5MzcxODc0MywiZXhwIjoxNjkzODA1MTQzfQ.UKqIlEN1_MaLfMHP4MW_YLxHvDVKB0S5waU8n_9eAyc" // Replace with your actual token
             val call = apiService.getCartData("Bearer $token")
 
             call.enqueue(object : Callback<List<CartItem>> {
