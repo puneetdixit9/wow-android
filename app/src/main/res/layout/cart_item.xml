@@ -2,43 +2,87 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="8dp">
 
-    <ImageView
-        android:id="@+id/item_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/pizza_image"
-        android:contentDescription="Item Image" />
-
-    <TextView
-        android:id="@+id/item_name"
-        android:layout_width="wrap_content"
+    <!-- Header Row -->
+    <TableRow
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Item Name"
-        android:textSize="16sp" />
+        android:background="#DDDDDD"
+        android:padding="8dp">
 
-    <TextView
-        android:id="@+id/item_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Price: ₹0.00"
-        android:textSize="14sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Item"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_weight="1" />
 
-    <TextView
-        android:id="@+id/item_size"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Size: Regular"
-        android:textSize="14sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Size"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_weight="1" />
 
-    <TextView
-        android:id="@+id/item_count"
-        android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Qty."
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rate/Qty."
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sum"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_weight="1" />
+    </TableRow>
+
+    <!-- Cart Item Rows (Dynamically Added) -->
+    <TableLayout
+        android:id="@+id/cart_table"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </TableLayout>
+
+    <!-- Total Row -->
+    <TableRow
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Count: 0"
-        android:textSize="14sp" />
+        android:background="#DDDDDD"
+        android:padding="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total"
+            android:textSize="16sp"
+            android:gravity="end"
+            android:layout_weight="4" />
+
+        <TextView
+            android:id="@+id/total_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="₹0.00"
+            android:textSize="16sp"
+            android:gravity="end"
+            android:layout_weight="1" />
+    </TableRow>
 </LinearLayout>

@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
+        android:id="@+id/navigation_food"
+        android:name="com.example.wow_pizza.ui.food.FoodFragment"
+        android:label="@string/title_food"
+        tools:layout="@layout/fragment_food" />
+
+    <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.example.wow_pizza.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"

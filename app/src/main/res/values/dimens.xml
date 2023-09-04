@@ -2,4 +2,8 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="cart_item_width">120dp</dimen>
+    <dimen name="cart_other_width">0dp</dimen>
+    <dimen name="cart_size_width">30dp</dimen>
+    <dimen name="cart_row_space_height">5dp</dimen>
 </resources>
