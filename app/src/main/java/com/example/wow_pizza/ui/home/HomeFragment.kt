@@ -16,13 +16,9 @@ import com.example.wow_pizza.CartItem
 import com.example.wow_pizza.MenuItems
 import com.example.wow_pizza.databinding.FragmentHomeBinding
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 data class AddedCartItem(val menuItem: MenuItems, var count: Int) {
 }
@@ -49,23 +45,12 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val sharedPreferences = requireActivity().getSharedPreferences("UserToken", Context.MODE_PRIVATE)
-        val token = sharedPreferences.getString("token", "")
+        var apiService = ApiService.create(requireActivity().getSharedPreferences("UserToken", Context.MODE_PRIVATE))
 
-        // Retrofit setup
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://44.211.227.41/wow-api/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            }).build())
-            .build()
-
-        val apiService = retrofit.create(ApiService::class.java)
 
         lifecycleScope.launch {
-            val call = apiService.getMenuItems("Bearer $token")
-
+            val call = apiService.getMenuItems()
+            val call2 = apiService.getCartData()
             call.enqueue(object : Callback<List<MenuItems>> {
                 override fun onResponse(
                     call: Call<List<MenuItems>>,
@@ -75,7 +60,7 @@ class HomeFragment : Fragment() {
                         menuItems = response.body() ?: emptyList()
                         recyclerView = binding.recyclerFoodItems
                         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-                        menuAdapter = MenuAdapter(menuItems, cartItems)
+                        menuAdapter = MenuAdapter(menuItems, cartItems, apiService)
                         recyclerView.adapter = menuAdapter
 
                     } else {
@@ -86,6 +71,42 @@ class HomeFragment : Fragment() {
 
                 override fun onFailure(call: Call<List<MenuItems>>, t: Throwable) {
                     Log.e("HomeFragment - Get menu data", "error: $t")
+                }
+            })
+
+            call2.enqueue(object : Callback<List<CartItem>> {
+                override fun onResponse(
+                    call: Call<List<CartItem>>,
+                    response: Response<List<CartItem>>
+                ) {
+                    if (response.isSuccessful) {
+                        val responseData = response.body() ?: emptyList()
+                        responseData.forEach { cartItem ->
+                            cartItems.add(AddedCartItem(
+                                MenuItems(
+                                    _id =cartItem._id,
+                                    img_url =cartItem.img_url,
+                                    item_group ="",
+                                    item_name = cartItem.item_name,
+                                    price =cartItem.price
+                                ), cartItem.count))
+                        }
+                        if (menuAdapter != null) {
+                            menuAdapter.notifyDataSetChanged()
+                        }
+
+
+                        Log.d("CartFragment", "Cart items size: ${cartItems.size}")
+
+
+                    } else {
+                        val errorBody = response.errorBody()?.string()
+                        Log.e("CartFragment - Get cart data", "API error: ${response.code()}, Error body: $errorBody")
+                    }
+                }
+
+                override fun onFailure(call: Call<List<CartItem>>, t: Throwable) {
+                    Log.e("CartFragment - Get cart data", "error: $t")
                 }
             })
         }

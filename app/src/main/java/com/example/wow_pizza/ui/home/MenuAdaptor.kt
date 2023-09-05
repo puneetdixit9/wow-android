@@ -5,13 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.wow_pizza.ApiService
 import com.example.wow_pizza.MenuItems
 import com.example.wow_pizza.databinding.ItemFoodBinding
 import com.squareup.picasso.Picasso
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MenuAdapter(
     private val menuItems: List<MenuItems>,
-    private val cartItems: MutableList<AddedCartItem>
+    private val cartItems: MutableList<AddedCartItem>,
+    private val apiService: ApiService
     ) :
     RecyclerView.Adapter<MenuAdapter.MenuItemViewHolder>() {
 
@@ -30,6 +35,21 @@ class MenuAdapter(
         return menuItems.size
     }
 
+    fun addToCart(menuItem: MenuItems, count: Int) {
+        val itemId = menuItem._id
+        val size = "regular"
+
+        apiService.addToCart(itemId, count.toString(), size)
+            .enqueue(object : Callback<Void> {
+                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                }
+
+                override fun onFailure(call: Call<Void>, t: Throwable) {
+                    Log.e("HomeFragment", "API call failed: ${t.message}")
+                }
+            })
+    }
+
     inner class MenuItemViewHolder(private val binding: ItemFoodBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -37,6 +57,13 @@ class MenuAdapter(
             binding.textFoodName.text = menuItem.item_name
             binding.textFoodPrice.text = "₹${menuItem.price}"
             Picasso.get().load(menuItem.img_url).into(binding.imageFood)
+
+
+            val itemCount = cartItems.find { it.menuItem._id == menuItem._id }?.count ?: 0
+            if (itemCount != 0) {
+                binding.layoutQuantityControl.subItem.visibility = View.VISIBLE
+                binding.layoutQuantityControl.textQuantity.text = itemCount.toString()
+            }
 
             // Add item to cart handling
             binding.layoutQuantityControl.addItem.setOnClickListener {
@@ -48,11 +75,11 @@ class MenuAdapter(
                 if (cartItem != null) {
                     cartItem.count++
                 } else {
-                    // If the item is not in the cart, add it with a count of 1
                     cartItems.add(AddedCartItem(menuItem, 1))
                 }
                 val itemCount = cartItems.find { it.menuItem._id == itemId }?.count ?: 0
                 binding.layoutQuantityControl.textQuantity.text = itemCount.toString()
+                addToCart(menuItem, itemCount)
             }
 
             // Remove item from cart handling
@@ -70,6 +97,7 @@ class MenuAdapter(
                 } else {
                     binding.layoutQuantityControl.textQuantity.text = itemCount.toString()
                 }
+                addToCart(menuItem, itemCount)
             }
         }
     }
