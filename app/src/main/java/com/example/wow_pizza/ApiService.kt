@@ -10,12 +10,28 @@ data class LoginRequest(val email: String, val password: String)
 
 data class CartItem(
     val _id: String,
-    val count: Int,
+    var count: Int,
     val img_url: String,
     val item_name: String,
     val price: Double,
     val size: String
 )
+
+data class MenuItemsSize(
+    val price: Double,
+    val size: String
+)
+
+data class MenuItems(
+    val _id: String,
+    val available_sizes: List<MenuItemsSize>,
+    val created_at: String,
+    val img_url: String,
+    val item_group: String,
+    val item_name: String,
+    val price: Double
+)
+
 
 
 interface ApiService {
@@ -24,4 +40,7 @@ interface ApiService {
 
     @GET("cart-data")
     fun getCartData(@Header("Authorization") authorizationHeader: String): Call<List<CartItem>>
+
+    @GET("items")
+    fun getMenuItems(@Header("Authorization") authorizationHeader: String): Call<List<MenuItems>>
 }

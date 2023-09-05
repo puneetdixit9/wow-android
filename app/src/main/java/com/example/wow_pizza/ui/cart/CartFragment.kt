@@ -63,15 +63,14 @@ class CartFragment : Fragment() {
             1F
         )
 
-// Create a layout parameter for the "Item" column with a fixed width
         val fixedWidthLayoutParams = TableRow.LayoutParams(
-            resources.getDimensionPixelSize(R.dimen.cart_item_width), // Replace with the correct dimension resource
+            resources.getDimensionPixelSize(R.dimen.cart_item_width),
             TableRow.LayoutParams.WRAP_CONTENT,
             1F
         )
 
         val itemSizeLayoutParams = TableRow.LayoutParams(
-            resources.getDimensionPixelSize(R.dimen.cart_size_width), // Replace with the correct dimension resource
+            resources.getDimensionPixelSize(R.dimen.cart_size_width),
             TableRow.LayoutParams.WRAP_CONTENT,
             1F
         )
@@ -94,35 +93,35 @@ class CartFragment : Fragment() {
                             val itemTextView = TextView(requireContext())
                             itemTextView.text = cartItem.item_name
                             itemTextView.gravity = Gravity.START
-                            itemTextView.layoutParams = fixedWidthLayoutParams // Use the fixed-width layout parameters for the "Item" column
+                            itemTextView.layoutParams = fixedWidthLayoutParams
                             itemTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
                             tableRow.addView(itemTextView)
 
                             val sizeTextView = TextView(requireContext())
                             sizeTextView.text = cartItem.size
                             sizeTextView.gravity = Gravity.CENTER
-                            sizeTextView.layoutParams = itemSizeLayoutParams // Use the common layout parameters for other columns
+                            sizeTextView.layoutParams = itemSizeLayoutParams
                             sizeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
                             tableRow.addView(sizeTextView)
 
                             val qtyTextView = TextView(requireContext())
                             qtyTextView.text = cartItem.count.toString()
                             qtyTextView.gravity = Gravity.CENTER
-                            qtyTextView.layoutParams = columnLayoutParams // Use the common layout parameters for other columns
+                            qtyTextView.layoutParams = columnLayoutParams
                             qtyTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
                             tableRow.addView(qtyTextView)
 
                             val rateQtyTextView = TextView(requireContext())
                             rateQtyTextView.text = "${cartItem.price}"
                             rateQtyTextView.gravity = Gravity.CENTER
-                            rateQtyTextView.layoutParams = columnLayoutParams // Use the common layout parameters for other columns
+                            rateQtyTextView.layoutParams = columnLayoutParams
                             rateQtyTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
                             tableRow.addView(rateQtyTextView)
 
                             val sumTextView = TextView(requireContext())
                             sumTextView.text = "${cartItem.price * cartItem.count}"
                             sumTextView.gravity = Gravity.END
-                            sumTextView.layoutParams = columnLayoutParams // Use the common layout parameters for other columns
+                            sumTextView.layoutParams = columnLayoutParams
                             sumTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
                             tableRow.addView(sumTextView)
                             tableLayout.addView(tableRow)

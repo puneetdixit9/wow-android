@@ -6,4 +6,8 @@
     <dimen name="cart_other_width">0dp</dimen>
     <dimen name="cart_size_width">30dp</dimen>
     <dimen name="cart_row_space_height">5dp</dimen>
+    <dimen name="status_normal_size">16sp</dimen>
+    <dimen name="status_small_size">12sp</dimen>
+    <dimen name="status_dot_normal_size">16dp</dimen>
+    <dimen name="status_dot_small_size">12dp</dimen>
 </resources>
