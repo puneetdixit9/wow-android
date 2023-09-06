@@ -31,19 +31,7 @@ class LoginActivity : AppCompatActivity() {
         val emailEditText = findViewById<EditText>(R.id.emailEditText)
         val passwordEditText = findViewById<EditText>(R.id.passwordEditText)
 
-        val httpClient = OkHttpClient.Builder()
-            .addInterceptor(HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            })
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://44.211.227.41/wow-api/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(httpClient)
-            .build()
-
-        val apiService = retrofit.create(ApiService::class.java)
+        val apiService = ApiService.create()
 
         loginButton.setOnClickListener {
             val email = emailEditText.text.toString()

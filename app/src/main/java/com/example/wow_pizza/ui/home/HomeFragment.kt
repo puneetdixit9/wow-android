@@ -91,10 +91,6 @@ class HomeFragment : Fragment() {
                                     price =cartItem.price
                                 ), cartItem.count))
                         }
-                        if (menuAdapter != null) {
-                            menuAdapter.notifyDataSetChanged()
-                        }
-
 
                         Log.d("CartFragment", "Cart items size: ${cartItems.size}")
 

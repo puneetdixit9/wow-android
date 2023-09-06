@@ -85,6 +85,23 @@ interface ApiService {
 
             return retrofit.create(ApiService::class.java)
         }
+
+        fun create(): ApiService {
+
+            val httpClient = OkHttpClient.Builder()
+                .addInterceptor(HttpLoggingInterceptor().apply {
+                    level = HttpLoggingInterceptor.Level.BODY
+                })
+                .build()
+
+            val retrofit = Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient)
+                .build()
+
+            return retrofit.create(ApiService::class.java)
+        }
     }
 
 }
