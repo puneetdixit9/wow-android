@@ -7,3 +7,9 @@ data class LoginResponse(
     val role: String,
     val token_type: String
 )
+
+
+data class SendOtpResponse(
+    val status: String,
+    val error: String
+)

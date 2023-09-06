@@ -49,32 +49,11 @@ class HomeFragment : Fragment() {
 
 
         lifecycleScope.launch {
-            val call = apiService.getMenuItems()
-            val call2 = apiService.getCartData()
-            call.enqueue(object : Callback<List<MenuItems>> {
-                override fun onResponse(
-                    call: Call<List<MenuItems>>,
-                    response: Response<List<MenuItems>>
-                ) {
-                    if (response.isSuccessful) {
-                        menuItems = response.body() ?: emptyList()
-                        recyclerView = binding.recyclerFoodItems
-                        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-                        menuAdapter = MenuAdapter(menuItems, cartItems, apiService)
-                        recyclerView.adapter = menuAdapter
 
-                    } else {
-                        val errorBody = response.errorBody()?.string()
-                        Log.e("HomeFragment - Get menu data", "API error: ${response.code()}, Error body: $errorBody")
-                    }
-                }
+            val cartDataAPI = apiService.getCartData()
+            val menuItemApi = apiService.getMenuItems()
 
-                override fun onFailure(call: Call<List<MenuItems>>, t: Throwable) {
-                    Log.e("HomeFragment - Get menu data", "error: $t")
-                }
-            })
-
-            call2.enqueue(object : Callback<List<CartItem>> {
+            cartDataAPI.enqueue(object : Callback<List<CartItem>> {
                 override fun onResponse(
                     call: Call<List<CartItem>>,
                     response: Response<List<CartItem>>
@@ -103,6 +82,29 @@ class HomeFragment : Fragment() {
 
                 override fun onFailure(call: Call<List<CartItem>>, t: Throwable) {
                     Log.e("CartFragment - Get cart data", "error: $t")
+                }
+            })
+
+            menuItemApi.enqueue(object : Callback<List<MenuItems>> {
+                override fun onResponse(
+                    call: Call<List<MenuItems>>,
+                    response: Response<List<MenuItems>>
+                ) {
+                    if (response.isSuccessful) {
+                        menuItems = response.body() ?: emptyList()
+                        recyclerView = binding.recyclerFoodItems
+                        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+                        menuAdapter = MenuAdapter(menuItems, cartItems, apiService)
+                        recyclerView.adapter = menuAdapter
+
+                    } else {
+                        val errorBody = response.errorBody()?.string()
+                        Log.e("HomeFragment - Get menu data", "API error: ${response.code()}, Error body: $errorBody")
+                    }
+                }
+
+                override fun onFailure(call: Call<List<MenuItems>>, t: Throwable) {
+                    Log.e("HomeFragment - Get menu data", "error: $t")
                 }
             })
         }

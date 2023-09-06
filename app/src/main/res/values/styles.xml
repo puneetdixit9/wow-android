@@ -111,6 +111,10 @@
 		<item name="fontFamily">@font/poppins_bold</item>
 	</style>
 
+	<style name="WhiteProgressBar">
+		<item name="android:color">@android:color/white</item>
+	</style>
+
 <!--	<style name="DialogStyle" parent="Theme.Design.Light.BottomSheetDialog">-->
 <!--		<item name="android:windowIsFloating">false</item>-->
 <!--		<item name="android:statusBarColor">@android:color/transparent</item>-->

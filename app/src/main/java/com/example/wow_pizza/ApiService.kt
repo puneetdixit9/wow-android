@@ -11,7 +11,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Path
 
-data class LoginRequest(val email: String, val password: String)
+data class LoginRequest(val phone: String, val otp: String)
+
+data class SendOTP(val phone: String)
 
 data class CartItem(
     val _id: String,
@@ -41,6 +43,10 @@ sealed class APIResult<out T> {
 }
 
 interface ApiService {
+
+    @POST("auth/otp")
+    fun sendOTP(@Body request: SendOTP): Call<SendOtpResponse>
+
     @POST("auth/login")
     fun login(@Body request: LoginRequest): Call<LoginResponse>
 

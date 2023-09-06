@@ -9,13 +9,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
+import android.widget.Toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.google.gson.JsonParser
 
 
 class LoginActivity : AppCompatActivity() {
@@ -23,43 +21,59 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        setContentView(R.layout.activity_login_new)
 
         loadingProgressBar = findViewById(R.id.loadingProgressBar)
 
-        val loginButton = findViewById<Button>(R.id.loginButton)
-        val emailEditText = findViewById<EditText>(R.id.emailEditText)
-        val passwordEditText = findViewById<EditText>(R.id.passwordEditText)
+        val loginButton = findViewById<Button>(R.id.button_login)
+        val phoneEditText = findViewById<EditText>(R.id.edit_phone)
+
+        phoneEditText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                if (phoneEditText.text.isEmpty()) {
+                    phoneEditText.setText("+91")
+                }
+                phoneEditText.hint = null
+
+            }
+        }
 
         val apiService = ApiService.create()
 
         loginButton.setOnClickListener {
-            val email = emailEditText.text.toString()
-            val password = passwordEditText.text.toString()
-            val loginRequest = LoginRequest(email, password)
-            val call = apiService.login(loginRequest)
-            Log.i("LoginActivity - login", "Email: $email and Password: $password")
-
+            loginButton.visibility = View.GONE
             loadingProgressBar.visibility = View.VISIBLE
-            call.enqueue(object : Callback<LoginResponse> {
-                override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+            val phone = phoneEditText.text.toString()
+            val otpRequest = SendOTP(phone.substring(3))
+            val call = apiService.sendOTP(otpRequest)
+            Log.i("LoginActivity - send otp", "Phone: $phone")
+
+
+            call.enqueue(object : Callback<SendOtpResponse> {
+                override fun onResponse(call: Call<SendOtpResponse>, response: Response<SendOtpResponse>) {
                     if (response.isSuccessful) {
 
-                        val loginResponse = response.body()
-                        if (loginResponse != null) {
-                            val token = loginResponse.access_token
-                            storeToken(token)
-                            navigateToMainActivity()
+                        val otpResponse = response.body()
+                        if (otpResponse?.error == null) {
+                            storePhone(phone.substring(3))
+                            navigateToVerifyOTPActivity()
                         }
                     } else {
                         val errorBody = response.errorBody()?.string()
+                        if (errorBody != null) {
+                            val jsonObject = JsonParser.parseString(errorBody).asJsonObject
+                            showToast(jsonObject.get("error").asString)
+                        }
+
                         Log.e("LoginActivity - login", "API error: ${response.code()}, Error body: $errorBody")
                     }
                     loadingProgressBar.visibility = View.GONE
+                    loginButton.visibility = View.VISIBLE
                 }
 
-                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                override fun onFailure(call: Call<SendOtpResponse>, t: Throwable) {
                     loadingProgressBar.visibility = View.GONE
+                    loginButton.visibility = View.VISIBLE
                 }
             })
         }
@@ -77,9 +91,30 @@ class LoginActivity : AppCompatActivity() {
             .apply()
     }
 
+    private fun storePhone(phone: String) {
+        getSharedPreferences("UserPhone", Context.MODE_PRIVATE)
+            .edit()
+            .putString("phone", phone)
+            .apply()
+    }
+
     private fun retrieveToken(): String? {
         return getSharedPreferences("UserToken", Context.MODE_PRIVATE)
             .getString("token", null)
+    }
+
+    private fun navigateToVerifyOTPActivity() {
+        try {
+            val intent = Intent(this, OtpActivity::class.java)
+            startActivity(intent)
+            finish()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     private fun navigateToMainActivity() {
