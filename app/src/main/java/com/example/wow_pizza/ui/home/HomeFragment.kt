@@ -45,7 +45,7 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        var apiService = ApiService.create(requireActivity().getSharedPreferences("UserToken", Context.MODE_PRIVATE))
+        var apiService = ApiService.create(requireActivity().getSharedPreferences("User", Context.MODE_PRIVATE))
 
 
         lifecycleScope.launch {

@@ -1,6 +1,5 @@
 package com.example.wow_pizza.ui.cart
 
-import CartAdapter
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -15,7 +14,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.wow_pizza.ApiService
 import com.example.wow_pizza.CartItem
-import com.example.wow_pizza.R
 import com.example.wow_pizza.databinding.FragmentCartNewBinding
 import kotlinx.coroutines.launch
 
@@ -27,6 +25,7 @@ import retrofit2.Response
 class CartFragment : Fragment() {
 
     private var _binding: FragmentCartNewBinding? = null
+    private lateinit var cartAdapter: CartAdapter
     private val binding get() = _binding!!
     private var cartItems: List<CartItem> = emptyList()
 
@@ -46,7 +45,7 @@ class CartFragment : Fragment() {
         val root: View = binding.root
 
 
-        val apiService = ApiService.create(requireActivity().getSharedPreferences("UserToken", Context.MODE_PRIVATE))
+        val apiService = ApiService.create(requireActivity().getSharedPreferences("User", Context.MODE_PRIVATE))
 
         lifecycleScope.launch {
             val call = apiService.getCartData()
@@ -60,7 +59,13 @@ class CartFragment : Fragment() {
                         cartItems = response.body() ?: emptyList()
                         Log.d("CartFragment", "Cart items size: ${cartItems.size}")
                         val recyclerView = binding.recyclerCartItems
-                        val cartAdapter = CartAdapter(cartItems)
+                        cartAdapter = CartAdapter(cartItems, apiService, updateTotalPrice = {
+                            updateTotalPrice()
+                        }, removeItemCallback = { cartItem ->
+                            cartItems = cartItems.filterNot { it._id == cartItem._id }
+                            cartAdapter.notifyDataSetChanged()
+                            updateTotalPrice()
+                        })
 
                         val layoutManager = LinearLayoutManager(requireContext())
                         recyclerView.layoutManager = layoutManager

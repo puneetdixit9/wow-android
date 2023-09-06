@@ -82,14 +82,13 @@ class LoginActivity : AppCompatActivity() {
         }
 
         val token = retrieveToken()
+        val phone = retrievePhone()
         if (token != null) {
             navigateToMainActivity()
-        }
-
-        val phone = retrievePhone()
-        if (phone != null) {
+        } else if (phone != null) {
             navigateToVerifyOTPActivity()
         }
+
     }
 
     private fun storeToken(token: String) {
