@@ -41,65 +41,79 @@ class LoginActivity : AppCompatActivity() {
         val apiService = ApiService.create()
 
         loginButton.setOnClickListener {
-            loginButton.visibility = View.GONE
-            loadingProgressBar.visibility = View.VISIBLE
             val phone = phoneEditText.text.toString()
-            val otpRequest = SendOTP(phone.substring(3))
-            val call = apiService.sendOTP(otpRequest)
-            Log.i("LoginActivity - send otp", "Phone: $phone")
+            if (phone.length < 13) {
+                showToast("Invalid Phone Number")
+            } else {
+                loginButton.visibility = View.GONE
+                loadingProgressBar.visibility = View.VISIBLE
+                val otpRequest = SendOTP(phone.substring(3))
+                val call = apiService.sendOTP(otpRequest)
+                Log.i("LoginActivity - send otp", "Phone: $phone")
+                call.enqueue(object : Callback<SendOtpResponse> {
+                    override fun onResponse(call: Call<SendOtpResponse>, response: Response<SendOtpResponse>) {
+                        if (response.isSuccessful) {
 
+                            val otpResponse = response.body()
+                            if (otpResponse?.error == null) {
+                                storePhone(phone.substring(3))
+                                navigateToVerifyOTPActivity()
+                            }
+                        } else {
+                            val errorBody = response.errorBody()?.string()
+                            if (errorBody != null) {
+                                val jsonObject = JsonParser.parseString(errorBody).asJsonObject
+                                showToast(jsonObject.get("error").asString)
+                            }
 
-            call.enqueue(object : Callback<SendOtpResponse> {
-                override fun onResponse(call: Call<SendOtpResponse>, response: Response<SendOtpResponse>) {
-                    if (response.isSuccessful) {
-
-                        val otpResponse = response.body()
-                        if (otpResponse?.error == null) {
-                            storePhone(phone.substring(3))
-                            navigateToVerifyOTPActivity()
+                            Log.e("LoginActivity - login", "API error: ${response.code()}, Error body: $errorBody")
                         }
-                    } else {
-                        val errorBody = response.errorBody()?.string()
-                        if (errorBody != null) {
-                            val jsonObject = JsonParser.parseString(errorBody).asJsonObject
-                            showToast(jsonObject.get("error").asString)
-                        }
-
-                        Log.e("LoginActivity - login", "API error: ${response.code()}, Error body: $errorBody")
+                        loadingProgressBar.visibility = View.GONE
+                        loginButton.visibility = View.VISIBLE
                     }
-                    loadingProgressBar.visibility = View.GONE
-                    loginButton.visibility = View.VISIBLE
-                }
 
-                override fun onFailure(call: Call<SendOtpResponse>, t: Throwable) {
-                    loadingProgressBar.visibility = View.GONE
-                    loginButton.visibility = View.VISIBLE
-                }
-            })
+                    override fun onFailure(call: Call<SendOtpResponse>, t: Throwable) {
+                        loadingProgressBar.visibility = View.GONE
+                        loginButton.visibility = View.VISIBLE
+                    }
+                })
+            }
+
         }
 
         val token = retrieveToken()
         if (token != null) {
             navigateToMainActivity()
         }
+
+        val phone = retrievePhone()
+        if (phone != null) {
+            navigateToVerifyOTPActivity()
+        }
     }
 
     private fun storeToken(token: String) {
-        getSharedPreferences("UserToken", Context.MODE_PRIVATE)
+        getSharedPreferences("User", Context.MODE_PRIVATE)
             .edit()
             .putString("token", token)
             .apply()
     }
 
+
+    private fun retrievePhone(): String? {
+        return getSharedPreferences("User", Context.MODE_PRIVATE)
+            .getString("phone", null)
+    }
+
     private fun storePhone(phone: String) {
-        getSharedPreferences("UserPhone", Context.MODE_PRIVATE)
+        getSharedPreferences("User", Context.MODE_PRIVATE)
             .edit()
             .putString("phone", phone)
             .apply()
     }
 
     private fun retrieveToken(): String? {
-        return getSharedPreferences("UserToken", Context.MODE_PRIVATE)
+        return getSharedPreferences("User", Context.MODE_PRIVATE)
             .getString("token", null)
     }
 

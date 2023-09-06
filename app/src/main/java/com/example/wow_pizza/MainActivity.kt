@@ -61,9 +61,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun clearUserData() {
-        val sharedPreferences = getSharedPreferences("UserToken", Context.MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences("User", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.remove("token")
+        editor.remove("phone")
         editor.apply()
     }
 

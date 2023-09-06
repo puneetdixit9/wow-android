@@ -13,13 +13,16 @@
 		android:background="@android:color/white"
 		tools:context="com.example.wow_pizza.OtpActivity">
 
-		<ImageView
-			android:id="@+id/image_close"
+		<ImageButton
+			android:id="@+id/button_close"
 			android:layout_width="32dp"
 			android:layout_height="32dp"
-			android:layout_margin="16dp"
+			android:layout_marginStart="16dp"
+			android:layout_marginTop="16dp"
+			android:layout_marginEnd="16dp"
+			android:layout_marginBottom="16dp"
 			android:src="@drawable/ic_close"
-			android:tint="@android:color/black" />
+			app:tint="@android:color/black" />
 
 		<LinearLayout
 			android:id="@+id/layout_otp"
@@ -50,12 +53,13 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_gravity="top"
+				android:drawablePadding="8dp"
 				android:fontFamily="@font/poppins_bold"
 				android:gravity="center|start"
 				android:paddingTop="3dp"
+				android:text="Enter the six digit OTP which has been sent to your mobile number:"
 				android:textColor="@android:color/black"
-				android:textStyle="bold"
-				tools:text="Enter the six digit OTP which has been sent to your mobile number:" />
+				android:textStyle="bold" />
 
 			<com.example.wow_pizza.utils.OtpEditText
 				android:id="@+id/edit_otp"
@@ -73,32 +77,61 @@
 				android:textSize="20sp"
 				android:textStyle="bold" />
 
-			<TextView
-				android:id="@+id/text_resend_otp"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_gravity="end"
-				android:drawableStart="@drawable/ic_reload"
-				android:drawablePadding="8dp"
-				android:fontFamily="@font/poppins_semibold"
-				android:gravity="center|start"
-				android:padding="8dp"
-				android:paddingTop="3dp"
-				android:text="@string/label_resend_otp"
-				android:textSize="12sp"
-				android:textStyle="bold" />
-
-
-			<com.google.android.material.button.MaterialButton
-				android:id="@+id/button_login"
+			<FrameLayout
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="8dp"
-				android:fontFamily="@font/poppins_semibold"
-				android:text="@string/label_verify"
-				android:textSize="18sp"
-				android:textStyle="bold"
-				app:backgroundTint="@color/colorAccent" />
+				android:layout_height="wrap_content">
+
+				<ProgressBar
+					android:id="@+id/resendOtpProgressBar"
+					style="@android:style/Widget.ProgressBar.Small"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="right"
+					android:indeterminateTint="@color/disabledColor"
+					android:paddingTop="10dp"
+					android:paddingRight="40dp"
+					android:visibility="gone" />
+
+				<TextView
+					android:id="@+id/text_resend_otp"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="end"
+					android:clickable="true"
+					android:drawableStart="@drawable/ic_reload"
+					android:drawablePadding="8dp"
+					android:fontFamily="@font/poppins_semibold"
+					android:gravity="center|start"
+					android:padding="8dp"
+					android:paddingTop="3dp"
+					android:text="@string/label_resend_otp"
+					android:textSize="12sp"
+					android:textStyle="bold" />
+			</FrameLayout>
+
+			<FrameLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
+
+				<ProgressBar
+					android:id="@+id/loadingProgressBar"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center"
+					android:indeterminateTint="@color/colorAccent"
+					android:visibility="gone" />
+
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/button_login"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="8dp"
+					android:fontFamily="@font/poppins_semibold"
+					android:text="@string/label_verify"
+					android:textSize="18sp"
+					android:textStyle="bold"
+					app:backgroundTint="@color/colorAccent" />
+			</FrameLayout>
 		</LinearLayout>
 	</RelativeLayout>
 </layout>
