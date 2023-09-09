@@ -27,7 +27,7 @@ class CartFragment : Fragment() {
     private var _binding: FragmentCartNewBinding? = null
     private lateinit var cartAdapter: CartAdapter
     private val binding get() = _binding!!
-    private var cartItems: List<CartItem> = emptyList()
+    private var cartItems: ArrayList<CartItem> = arrayListOf()
 
     private fun updateTotalPrice() {
         val totalPrice = cartItems.sumOf { it.price * it.count }
@@ -50,19 +50,20 @@ class CartFragment : Fragment() {
         lifecycleScope.launch {
             val call = apiService.getCartData()
 
-            call.enqueue(object : Callback<List<CartItem>> {
+            call.enqueue(object : Callback<ArrayList<CartItem>> {
                 override fun onResponse(
-                    call: Call<List<CartItem>>,
-                    response: Response<List<CartItem>>
+                    call: Call<ArrayList<CartItem>>,
+                    response: Response<ArrayList<CartItem>>
                 ) {
                     if (response.isSuccessful) {
-                        cartItems = response.body() ?: emptyList()
+                        cartItems = response.body() ?: arrayListOf()
                         Log.d("CartFragment", "Cart items size: ${cartItems.size}")
                         val recyclerView = binding.recyclerCartItems
                         cartAdapter = CartAdapter(cartItems, apiService, updateTotalPrice = {
                             updateTotalPrice()
-                        }, removeItemCallback = { cartItem ->
-                            cartItems = cartItems.filterNot { it._id == cartItem._id }
+                        }, removeItemCallback = {
+
+//                            cartItems = cartItems.filterNot { it._id == cartItem._id }
                             cartAdapter.notifyDataSetChanged()
                             updateTotalPrice()
                         })
@@ -81,7 +82,7 @@ class CartFragment : Fragment() {
                     }
                 }
 
-                override fun onFailure(call: Call<List<CartItem>>, t: Throwable) {
+                override fun onFailure(call: Call<ArrayList<CartItem>>, t: Throwable) {
                     Log.e("CartFragment - Get cart data", "error: $t")
                 }
             })

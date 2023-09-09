@@ -63,6 +63,9 @@ class MenuAdapter(
             if (itemCount != 0) {
                 binding.layoutQuantityControl.subItem.visibility = View.VISIBLE
                 binding.layoutQuantityControl.textQuantity.text = itemCount.toString()
+            } else {
+                binding.layoutQuantityControl.textQuantity.text = "Add"
+                binding.layoutQuantityControl.subItem.visibility = View.GONE
             }
 
             // Add item to cart handling

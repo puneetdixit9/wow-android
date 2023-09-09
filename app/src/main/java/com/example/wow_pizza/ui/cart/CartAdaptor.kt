@@ -14,14 +14,14 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class CartAdapter(
-    private val cartItems: List<CartItem>,
+    private val cartItems: ArrayList<CartItem>,
     private val apiService: ApiService,
     private val updateTotalPrice: () -> Unit,
     private val removeItemCallback: (CartItem) -> Unit
 ) :
     RecyclerView.Adapter<CartAdapter.CartItemViewHolder>() {
 
-    fun addToCart(menuItem: MenuItems, count: Int, binding: ItemCartProductBinding, cartItem: CartItem) {
+    fun addToCart(menuItem: MenuItems, count: Int, binding: ItemCartProductBinding, cartItem: CartItem, position: Int) {
         val itemId = menuItem._id
         val size = "regular"
 
@@ -32,8 +32,10 @@ class CartAdapter(
                     binding.layoutQuantityControl.textQuantity.text = cartItem.count.toString()
                     updateTotalPrice()
                     if (cartItem.count == 0) {
-                        removeItemCallback(cartItem)
-                        binding.layoutRoot.visibility = View.GONE
+                        cartItems.removeAt(position)
+                        notifyDataSetChanged()
+//                        removeItemCallback(cartItem)
+//                        binding.layoutRoot.visibility = View.GONE
                     }
                 }
 
@@ -78,11 +80,12 @@ class CartAdapter(
                         item_group = "",
                         item_name = cartItem.item_name,
                         price = cartItem.price
-                    ), cartItem.count, binding, cartItem
+                    ), cartItem.count, binding, cartItem, position
                 )
             }
 
             binding.layoutQuantityControl.subItem.setOnClickListener {
+                Log.d("Test Adaptor position", "$position")
                 cartItem.count--
                 addToCart(
                     MenuItems(
@@ -91,7 +94,7 @@ class CartAdapter(
                         item_group = "",
                         item_name = cartItem.item_name,
                         price = cartItem.price
-                    ), cartItem.count, binding, cartItem
+                    ), cartItem.count, binding, cartItem, position
                 )
             }
         }

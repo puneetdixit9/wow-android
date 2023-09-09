@@ -40,8 +40,9 @@ class OtpActivity : AppCompatActivity() {
             val otp = otpEditText.text.toString()
             if (otp.length == 6) {
                 val phone = retrievePhone()
-                if (phone != null) {
-                    val loginRequest = LoginRequest(phone, otp)
+                val deviceToken = retrieveDeviceToken()
+                if (phone != null && deviceToken != null) {
+                    val loginRequest = LoginRequest(phone, otp, deviceToken)
                     val call = apiService.login(loginRequest)
                     Log.i("OtpActivity - login", "Phone: $phone, OTP: $otp")
 
@@ -72,6 +73,9 @@ class OtpActivity : AppCompatActivity() {
                             loginButton.visibility = View.VISIBLE
                         }
                     })
+                }
+                else {
+                    showToast("Please reinstall the application, or contact support")
                 }
             } else {
                 showToast("Please enter complete OTP")
@@ -125,6 +129,12 @@ class OtpActivity : AppCompatActivity() {
     private fun retrievePhone(): String? {
         return getSharedPreferences("User", Context.MODE_PRIVATE)
             .getString("phone", null)
+    }
+
+
+    private fun retrieveDeviceToken(): String? {
+        return getSharedPreferences("User", Context.MODE_PRIVATE)
+            .getString("deviceToken", null)
     }
 
     private fun navigateToMainActivity() {

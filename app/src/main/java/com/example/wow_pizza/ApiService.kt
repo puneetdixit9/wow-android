@@ -11,7 +11,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Path
 
-data class LoginRequest(val phone: String, val otp: String)
+data class LoginRequest(val phone: String, val otp: String, val device_token: String)
 
 data class SendOTP(val phone: String)
 
@@ -51,10 +51,10 @@ interface ApiService {
     fun login(@Body request: LoginRequest): Call<LoginResponse>
 
     @GET("cart-data")
-    fun getCartData(): Call<List<CartItem>>
+    fun getCartData(): Call<ArrayList<CartItem>>
 
     @GET("items")
-    fun getMenuItems(): Call<List<MenuItems>>
+    fun getMenuItems(): Call<ArrayList<MenuItems>>
 
     @POST("add-to-cart/{itemId}/{count}/{size}")
     fun addToCart(
@@ -65,7 +65,7 @@ interface ApiService {
 
 
     companion object {
-        private const val BASE_URL = "http://44.211.227.41/wow-api/"
+        private const val BASE_URL = "https://puneetdixit.in/wow-api/"
 
         fun create(sharedPreferences : SharedPreferences): ApiService {
 

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1093606437364",
+    "firebase_url": "https://wow-pizza-21db7-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "wow-pizza-21db7",
+    "storage_bucket": "wow-pizza-21db7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1093606437364:android:1dfc3b3f2a30f03dca09a1",
+        "android_client_info": {
+          "package_name": "com.example.wow_pizza"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1093606437364-de2fq9isgn1h5b8td8remr00bcjvfu2o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAw7-eTXH3eeeoHca76QLHigTLAkCZF2e8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1093606437364-de2fq9isgn1h5b8td8remr00bcjvfu2o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
