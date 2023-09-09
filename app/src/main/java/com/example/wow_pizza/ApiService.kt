@@ -13,6 +13,10 @@ import retrofit2.http.Path
 
 data class LoginRequest(val phone: String, val otp: String, val device_token: String)
 
+
+data class OrderRequest(val order_note: String, val order_type: String, val total: Double)
+
+
 data class SendOTP(val phone: String)
 
 data class CartItem(
@@ -55,6 +59,9 @@ interface ApiService {
 
     @GET("items")
     fun getMenuItems(): Call<ArrayList<MenuItems>>
+
+    @POST("order")
+    fun placeOrder(@Body request: OrderRequest): Call<Void>
 
     @POST("add-to-cart/{itemId}/{count}/{size}")
     fun addToCart(

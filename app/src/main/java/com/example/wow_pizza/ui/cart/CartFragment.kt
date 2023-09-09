@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.wow_pizza.ApiService
 import com.example.wow_pizza.CartItem
+import com.example.wow_pizza.OrderRequest
 import com.example.wow_pizza.databinding.FragmentCartNewBinding
 import kotlinx.coroutines.launch
 
@@ -63,7 +64,6 @@ class CartFragment : Fragment() {
                             updateTotalPrice()
                         }, removeItemCallback = {
 
-//                            cartItems = cartItems.filterNot { it._id == cartItem._id }
                             cartAdapter.notifyDataSetChanged()
                             updateTotalPrice()
                         })
@@ -86,6 +86,30 @@ class CartFragment : Fragment() {
                     Log.e("CartFragment - Get cart data", "error: $t")
                 }
             })
+        }
+
+        binding.placeOrder.setOnClickListener {
+            binding.placeOrder.visibility = View.GONE
+            binding.loadingProgressBar.visibility = View.VISIBLE
+            val orderRequest = OrderRequest(" ", "Delivery", cartItems.sumOf { it.price * it.count })
+            apiService.placeOrder(orderRequest)
+                .enqueue(object : Callback<Void> {
+                    override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                        binding.placeOrder.visibility = View.VISIBLE
+                        binding.loadingProgressBar.visibility = View.GONE
+                        cartItems.clear()
+                        updateTotalPrice()
+                        cartAdapter.notifyDataSetChanged()
+
+                    }
+
+                    override fun onFailure(call: Call<Void>, t: Throwable) {
+                        Log.e("HomeFragment", "API call failed: ${t.message}")
+                        binding.placeOrder.visibility = View.VISIBLE
+                        binding.loadingProgressBar.visibility = View.GONE
+                    }
+
+                })
         }
 
         return root

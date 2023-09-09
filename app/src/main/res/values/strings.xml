@@ -15,6 +15,7 @@
     <string name="hint_search_outlets_or_dish">Search Dish</string>
     <string name="label_cart">Cart</string>
     <string name="label_pickup">Pickup</string>
+    <string name="label_place_order">Place Order</string>
     <string name="label_delivery">Delivery</string>
     <string name="label_to_pay">To Pay</string>
     <string name="label_enter_delivery_location">Enter Delivery Location</string>
