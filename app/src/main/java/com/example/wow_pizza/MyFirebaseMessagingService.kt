@@ -84,6 +84,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 .setSmallIcon(R.drawable.wow_pizza_logo)
                 .setAutoCancel(true)
                 .setVibrate(longArrayOf(1000, 1000, 1000, 1000))
+                .setDefaults(Notification.DEFAULT_SOUND)
                 .setOnlyAlertOnce(true)
                 .setContentIntent(pendingIntent)
 
@@ -95,6 +96,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel =
                 NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH)
+            notificationChannel.enableVibration(true)
             notificationManager.createNotificationChannel(notificationChannel)
         }
 
