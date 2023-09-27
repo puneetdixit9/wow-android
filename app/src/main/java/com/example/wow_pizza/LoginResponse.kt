@@ -13,3 +13,8 @@ data class SendOtpResponse(
     val status: String,
     val error: String
 )
+
+data class SignupResponse(
+    val status: String,
+    val error: String
+)

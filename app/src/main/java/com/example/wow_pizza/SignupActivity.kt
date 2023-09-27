@@ -5,30 +5,33 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.JsonParser
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import com.google.gson.JsonParser
 
-
-class LoginActivity : AppCompatActivity() {
+class SignupActivity : AppCompatActivity() {
     private lateinit var loadingProgressBar: ProgressBar
 
-    override fun onCreate(savedInstanceState: Bundle?) {2
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login_new)
+        setContentView(R.layout.signup)
 
         loadingProgressBar = findViewById(R.id.loadingProgressBar)
 
-        val loginButton = findViewById<Button>(R.id.button_login)
+        val signupButton = findViewById<Button>(R.id.signup_button)
         val phoneEditText = findViewById<EditText>(R.id.edit_phone)
-        val signupPage = findViewById<TextView>(R.id.signup_link)
+        val firstNameEditText = findViewById<EditText>(R.id.edit_first_name)
+        val lastNameEditText = findViewById<EditText>(R.id.edit_last_name)
+        val emailEditText = findViewById<EditText>(R.id.edit_email)
+        val passwordEditText = findViewById<EditText>(R.id.edit_password)
+        val loginLink = findViewById<TextView>(R.id.login_link)
 
         phoneEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
@@ -42,14 +45,19 @@ class LoginActivity : AppCompatActivity() {
 
         val apiService = ApiService.create()
 
-        loginButton.setOnClickListener {
+        signupButton.setOnClickListener {
             val phone = phoneEditText.text.toString()
+            val firstName = firstNameEditText.text.toString()
+            val lastName = lastNameEditText.text.toString()
+            val email = emailEditText.text.toString()
+            val password = passwordEditText.text.toString()
             if (phone.length < 13) {
                 showToast("Invalid Phone Number")
             } else {
-                loginButton.visibility = View.GONE
+                signupButton.visibility = View.GONE
                 loadingProgressBar.visibility = View.VISIBLE
                 val otpRequest = SendOTP(phone.substring(3))
+                val signupRequest = SignupRequest(phone, password, email, firstName, lastName)
                 val call = apiService.sendOTP(otpRequest)
                 Log.i("LoginActivity - send otp", "Phone: $phone")
                 call.enqueue(object : Callback<SendOtpResponse> {
@@ -71,55 +79,30 @@ class LoginActivity : AppCompatActivity() {
                             Log.e("LoginActivity - login", "API error: ${response.code()}, Error body: $errorBody")
                         }
                         loadingProgressBar.visibility = View.GONE
-                        loginButton.visibility = View.VISIBLE
+                        signupButton.visibility = View.VISIBLE
                     }
 
                     override fun onFailure(call: Call<SendOtpResponse>, t: Throwable) {
                         loadingProgressBar.visibility = View.GONE
-                        loginButton.visibility = View.VISIBLE
+                        signupButton.visibility = View.VISIBLE
                     }
                 })
             }
 
         }
 
-        signupPage.setOnClickListener {
-            navigateToSignUpActivity()
-        }
-
-        val token = retrieveToken()
-        val phone = retrievePhone()
-        if (token != null) {
-            navigateToMainActivity()
-        } else if (phone != null) {
-            navigateToVerifyOTPActivity()
+        loginLink.setOnClickListener {
+            navigateToLoginActivity()
         }
 
     }
 
-    private fun storeToken(token: String) {
-        getSharedPreferences("User", Context.MODE_PRIVATE)
-            .edit()
-            .putString("token", token)
-            .apply()
-    }
-
-
-    private fun retrievePhone(): String? {
-        return getSharedPreferences("User", Context.MODE_PRIVATE)
-            .getString("phone", null)
-    }
 
     private fun storePhone(phone: String) {
         getSharedPreferences("User", Context.MODE_PRIVATE)
             .edit()
             .putString("phone", phone)
             .apply()
-    }
-
-    private fun retrieveToken(): String? {
-        return getSharedPreferences("User", Context.MODE_PRIVATE)
-            .getString("token", null)
     }
 
     private fun navigateToVerifyOTPActivity() {
@@ -136,9 +119,10 @@ class LoginActivity : AppCompatActivity() {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
-    private fun navigateToMainActivity() {
+
+    private fun navigateToLoginActivity() {
         try {
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
         } catch (e: Exception) {
@@ -146,13 +130,5 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun navigateToSignUpActivity() {
-        try {
-            val intent = Intent(this, SignupActivity::class.java)
-            startActivity(intent)
-            finish()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
+
 }

@@ -19,6 +19,14 @@ data class OrderRequest(val order_note: String, val order_type: String, val tota
 
 data class SendOTP(val phone: String)
 
+data class SignupRequest(
+    val phone: String,
+    val password: String,
+    val email: String,
+    val first_name: String,
+    val last_name: String
+)
+
 data class CartItem(
     val _id: String,
     var count: Int,
@@ -50,6 +58,9 @@ interface ApiService {
 
     @POST("auth/otp")
     fun sendOTP(@Body request: SendOTP): Call<SendOtpResponse>
+
+    @POST("auth/otp")
+    fun signup(@Body request: SignupRequest): Call<SignupResponse>
 
     @POST("auth/login")
     fun login(@Body request: LoginRequest): Call<LoginResponse>
